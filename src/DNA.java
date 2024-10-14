@@ -1,3 +1,6 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * DNA
  * <p>
@@ -22,30 +25,55 @@ public class DNA {
         int greatestRepeats = 0;
         int currentRepeats = 0;
 
-        // Loop through each character in the sequence
-        for (char letter : sequence.toCharArray()) {
-            if (letter == STR.charAt(STRPosition)) {
-                // Increase STR Position
+        // Iterate through sequence
+        for (int i = 0; i < sequence.length(); i++) {
+            // Check if the current character matches the STR
+            if (sequence.charAt(i) == STR.charAt(STRPosition)) {
                 STRPosition++;
 
-                // Check for STR cycle
-                if (STRPosition >= STR.length()) {
-                    currentRepeats++;
+                // If we have finished STR, reset STRPosition and increment currentRepeats
+                if (STRPosition == STR.length()) {
                     STRPosition = 0;
+                    currentRepeats++;
                 }
             } else {
-                STRPosition = 0;
-
-                // Update repetitions
+                // Save the currentRepeats if it is greater than the greatestRepeats
                 if (currentRepeats > greatestRepeats) {
                     greatestRepeats = currentRepeats;
                 }
 
-                // Reset current repetitions
+                // Reset currentRepeats and STRPosition
                 currentRepeats = 0;
+                STRPosition = 0;
             }
         }
 
-        return Math.max(currentRepeats, greatestRepeats);
+        return greatestRepeats;
     }
+//    private class Sequence {
+//        byte[] sequence;
+//
+//        public Sequence(String sequence) {
+//            ArrayList<Byte> sequenceList = new ArrayList<>();
+//
+//            // Convert to byte array list
+//            for (char letter : sequence.toCharArray()) {
+//                if (letter == 'a' || letter == 'A') {
+//                    sequenceList.add((byte) 0);
+//                } else if (letter == 'c' || letter == 'C') {
+//                    sequenceList.add((byte) 1);
+//                } else if (letter == 'g' || letter == 'G') {
+//                    sequenceList.add((byte) 2);
+//                } else if (letter == 't' || letter == 'T') {
+//                    sequenceList.add((byte) 3);
+//                }
+//            }
+//
+//            // Convert arraylist to array
+//            this.sequence = new byte[sequenceList.size()];
+//            for (int i = 0; i < sequenceList.size(); i++) {
+//                this.sequence[i] = sequenceList.get(i);
+//            }
+//        }
+//    }
 }
