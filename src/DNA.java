@@ -22,19 +22,12 @@ public class DNA {
         int greatestRepeats = 0;
         int currentRepeats = 0;
 
-        // Log selected sequence + STR
-        System.out.println("Sequence: " + sequence);
-        System.out.println("STR: " + STR);
-
         // Loop through each character in the sequence
         for (int position = 0; position < sequence.length(); position++) {
             // Get current letter
             char letter = sequence.charAt(position);
 
-            // Log character
-            System.out.print(letter);
             if (letter == STR.charAt(STRPosition)) {
-
                 // Increase STR Position
                 STRPosition++;
 
@@ -42,9 +35,6 @@ public class DNA {
                 if (STRPosition >= STR.length()) {
                     currentRepeats++;
                     STRPosition = 0;
-
-                    // Log increment
-                    System.out.println(" - STR found! Current repeats: " + currentRepeats);
                 }
             } else {
                 // Recovery from repeated letters
@@ -52,6 +42,9 @@ public class DNA {
                 for (int i = 0; i < STRPosition; i++) {
                     if (sequence.startsWith(STR, position - i)) {
                         falseDetection = true;
+
+                        // Update with new STR position
+                        STRPosition = i+1;
                         break;
                     }
                 }
