@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * DNA
  * <p>
@@ -22,7 +24,6 @@ public class DNA {
 
         // Calculate STR Hash
         Hash STRHash = new Hash(STR);
-        System.out.println("STRHASH:" + STRHash.hash);
 
         // Calculate initial sequence hash
         SequenceHash sequenceHash = new SequenceHash(sequence, STR.length());
@@ -30,7 +31,6 @@ public class DNA {
         // Count longest sequence!
         while (true) {
             try {
-                System.out.println(sequenceHash.hash);
                 // Match found!
                 if (STRHash.getHash() == sequenceHash.getHash()) {
                     // Increment longest repetition
@@ -73,7 +73,7 @@ public class DNA {
             long sum = 0;
 
             for (int i = startIndex; i < endIndex; i++) {
-                sum += (value.charAt(i) * getPow(endIndex - i)) % P_VALUE;
+                sum = (sum * R + value.charAt(i)) % P_VALUE;
             }
 
             return sum % P_VALUE;
@@ -103,17 +103,44 @@ public class DNA {
     private static class SequenceHash extends Hash {
         private int currentPosition = 0;
         private final int STRLength;
+        private long[] precalculatedPowers;
 
         // Constructor
         SequenceHash(String value, int STRLength) {
             super(value);
             this.STRLength = STRLength;
+            calculatePowers(STRLength);
             hash = calculateHash(0, STRLength);
+        }
+
+        // Powers
+        private void calculatePowers(int maxPower) {
+            precalculatedPowers = new long[maxPower + 1];
+
+            for (int i = 0; i <= maxPower; i++) {
+               // Power of 0 is always 1
+                if (i == 0) {
+                    precalculatedPowers[i] = 0;
+                } else {
+                    // Calculate power
+                    precalculatedPowers[i] = R;
+
+                    for (int x = 1; x < i; x++) {
+                        precalculatedPowers[i] *= R;
+                        precalculatedPowers[i] %= P_VALUE;
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected long getPow(int pow) {
+            return precalculatedPowers[pow];
         }
 
         // Increment Hash (1 forward)
         public void incrementByOne() {
-            // Subtract first value (idk what i did here, but it solved problem of negatives...)
+            // Subtract first value (not sure if this is the most effective way to prevent negatives, but this is what worked for me)
             hash = (hash - (value.charAt(currentPosition) * getPow(STRLength - 1)) % P_VALUE + P_VALUE) % P_VALUE;
 
             // Multiply by R
@@ -136,8 +163,6 @@ public class DNA {
 
             // Update hash
             hash = calculateHash(currentPosition, currentPosition + STRLength);
-
-            System.out.println("STR BAD!");
         }
     }
 }

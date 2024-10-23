@@ -8,7 +8,8 @@ Name: Alexandre Haddad-Delaveau
 | October 13 | 22:10-22:40 |                                                                                           Found solution! STRPosition was not being updated to reflect the work being done when avoiding a false negative due to repeating letters. All tests pass, and are well within time. |
 | October 21 | 14:30-15:00 |                                       Started working on a solution which uses hashing. Built a hasher class and a DNA Sequence class which converts the DNA sequence into a slightly smaller object, with only 4 possible characters instead of all of the ascii characters. |
 | October 22 | 17:50-18:20 |                                                                                                                                       Finished all classes (hash and sequence) and put code together to calculate longest repetition. it doesn't work. will work on it later. |
-| October 22 | 18:20-18:50 |                                                                                                                                            Fixed many bugs that casued negatives! Also removed converting the string into DNA Sequence as it absolutely killed performance :( |
+| October 22 | 18:20-18:50 |                                                                                                                                             Fixed many bugs that cased negatives! Also removed converting the string into DNA Sequence as it absolutely killed performance :( |
+| October 22 | 18:50-19:10 |                Fixed bug that caused incorrect calculation of hash... i just did a stupid math mistake... may have reversed order of powers. Also added power recalculation since it is inefficient to recalculate the powers each time. Much easier to just save the powers. |
 
 
 To add a new row to the table, click into a cell and then hit shift-enter.

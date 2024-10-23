@@ -63,7 +63,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.DNATest.testBasic">
+  <component name="RunManager" selected="JUnit.DNATest">
     <configuration name="DNATest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DNA 2.0 Student Code" />
       <option name="PACKAGE_NAME" value="" />
@@ -115,8 +115,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.DNATest.testBasic" />
         <item itemvalue="JUnit.DNATest" />
+        <item itemvalue="JUnit.DNATest.testBasic" />
         <item itemvalue="JUnit.DNATest.testMore" />
         <item itemvalue="JUnit.DNATest.testEvenMore" />
         <item itemvalue="JUnit.DNATest.testLargest" />
@@ -144,7 +144,7 @@
       <workItem from="1729017762005" duration="6000" />
       <workItem from="1729544468246" duration="47000" />
       <workItem from="1729544525703" duration="3458000" />
-      <workItem from="1729644282053" duration="3887000" />
+      <workItem from="1729644282053" duration="4418000" />
     </task>
     <servers />
   </component>
