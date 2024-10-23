@@ -1,5 +1,3 @@
-import java.util.Comparator;
-
 /**
  * DNA
  * <p>
@@ -13,29 +11,26 @@ import java.util.Comparator;
  */
 
 public class DNA {
-
-    /**
-     * TODO: Complete this function, STRCount(), to return longest consecutive run of STR in sequence.
-     */
-    public static int STRCount(String sequenceString, String STRString) {
+    public static int STRCount(String sequence, String STR) {
         // Keep track of current & longest repetition
         int longestRepetition = 0;
         int currentRepetition = 0;
 
-        // Convert to DNASequence
-        DNASequence sequence = new DNASequence(sequenceString);
-        DNASequence STR = new DNASequence(STRString);
+        // Uppercase both strings
+        sequence = sequence.toUpperCase();
+        STR = STR.toUpperCase();
 
         // Calculate STR Hash
-        Hash STRHash = new Hash(STR.getSequence());
-
+        Hash STRHash = new Hash(STR);
+        System.out.println("STRHASH:" + STRHash.hash);
 
         // Calculate initial sequence hash
-        SequenceHash sequenceHash = new SequenceHash(sequence.getSequence(), sequenceString.length());
+        SequenceHash sequenceHash = new SequenceHash(sequence, STR.length());
 
         // Count longest sequence!
         while (true) {
             try {
+                System.out.println(sequenceHash.hash);
                 // Match found!
                 if (STRHash.getHash() == sequenceHash.getHash()) {
                     // Increment longest repetition
@@ -60,73 +55,48 @@ public class DNA {
         return Math.max(currentRepetition, longestRepetition);
     }
 
-    private static class DNASequence {
-        private final byte[] sequence;
-        private byte[] conversionMap;
-
-        // Getters
-        public byte[] getSequence() {
-            return sequence;
-        }
-
-        // Tools
-        private void fillConversionMap() {
-            conversionMap = new byte[128];
-
-            // Fill with values
-            conversionMap['A'] = 0;
-            conversionMap['C'] = 1;
-            conversionMap['T'] = 2;
-            conversionMap['G'] = 3;
-
-            conversionMap['a'] = 0;
-            conversionMap['c'] = 1;
-            conversionMap['t'] = 2;
-            conversionMap['g'] = 3;
-        }
-
-        // Constructor
-        DNASequence(String DNAString) {
-            // Configure conversion map (string to bytes)
-            fillConversionMap();
-
-            // Convert DNA Sequence
-            sequence = new byte[DNAString.length()];
-
-            for (int i = 0; i < sequence.length; i++) {
-                sequence[i] = conversionMap[DNAString.charAt(i)];
-            }
-        }
-    }
-
     private static class Hash{
         // Config
-        protected final int P_VALUE = 1000000787;
+        protected static final int P_VALUE = 1000000787;
+        protected static final int R = 85; // T - highest value expected - is the 85th character on the ASCII table
 
-        protected int hash;
-        protected final byte[] value;
+        protected long hash;
+        protected final String value;
 
         // Getters
-        public int getHash() {
+        public long getHash() {
             return hash;
         }
 
         // Hash Methods
-        protected int calculateHash(int startIndex, int endIndex) {
-            int sum = 0;
+        protected long calculateHash(int startIndex, int endIndex) {
+            long sum = 0;
 
             for (int i = startIndex; i < endIndex; i++) {
-                sum += (value[i] * (int) Math.pow(4, endIndex - i)) % P_VALUE;
+                sum += (value.charAt(i) * getPow(endIndex - i)) % P_VALUE;
             }
 
             return sum % P_VALUE;
         }
 
+        protected long getPow(int pow) {
+            if (pow == 0) {
+                return 1;
+            }
+
+            long sum = R;
+            for (int i = 1; i < pow; i++) {
+                sum *= R;
+                sum %= P_VALUE;
+            }
+
+            return sum;
+        }
 
         // Constructor
-        Hash(byte[] value) {
+        Hash(String value) {
             this.value = value;
-            hash = calculateHash(0, value.length);
+            hash = calculateHash(0, value.length());
         }
     }
 
@@ -135,42 +105,39 @@ public class DNA {
         private final int STRLength;
 
         // Constructor
-        SequenceHash(byte[] value, int STRLength) {
+        SequenceHash(String value, int STRLength) {
             super(value);
             this.STRLength = STRLength;
             hash = calculateHash(0, STRLength);
         }
 
         // Increment Hash (1 forward)
-        public int incrementByOne() {
-            // Subtract first value
-            hash -= (int) (value[currentPosition] * Math.pow(4, STRLength));
+        public void incrementByOne() {
+            // Subtract first value (idk what i did here, but it solved problem of negatives...)
+            hash = (hash - (value.charAt(currentPosition) * getPow(STRLength - 1)) % P_VALUE + P_VALUE) % P_VALUE;
 
-            // Multiply by R (4)
-            hash *= 4;
+            // Multiply by R
+            hash *= R;
 
             // Add hash for last digit
-            hash += value[currentPosition + STRLength];
+            hash += value.charAt(currentPosition + STRLength);
 
             // Mod
-            hash %= P_VALUE;
+            hash = (hash + P_VALUE) % P_VALUE;
 
             // Increment position
             currentPosition += 1;
-
-            return hash;
         }
 
         // Move forward STR length
-        public int incrementBySTR() {
+        public void incrementBySTR() {
             // Increment position
             currentPosition += STRLength;
 
             // Update hash
             hash = calculateHash(currentPosition, currentPosition + STRLength);
 
-            // Return new hash
-            return hash;
+            System.out.println("STR BAD!");
         }
     }
 }
