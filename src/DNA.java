@@ -1,3 +1,6 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * DNA
  * <p>
@@ -16,54 +19,94 @@ public class DNA {
      * TODO: Complete this function, STRCount(), to return longest consecutive run of STR in sequence.
      */
     public static int STRCount(String sequence, String STR) {
-        int STRPosition = 0;
+        return 0;
+    }
 
-        // Track repetitions
-        int greatestRepeats = 0;
-        int currentRepeats = 0;
+    private class DNASequence {
+        private byte[] sequence;
+        private byte[] conversionMap;
 
-        // Loop through each character in the sequence
-        for (int position = 0; position < sequence.length(); position++) {
-            // Get current letter
-            char letter = sequence.charAt(position);
-
-            if (letter == STR.charAt(STRPosition)) {
-                // Increase STR Position
-                STRPosition++;
-
-                // Check for STR cycle
-                if (STRPosition >= STR.length()) {
-                    currentRepeats++;
-                    STRPosition = 0;
-                }
-            } else {
-                // Recovery from repeated letters
-                boolean falseDetection = false;
-                for (int i = 0; i < STRPosition; i++) {
-                    if (sequence.startsWith(STR, position - i)) {
-                        falseDetection = true;
-
-                        // Update with new STR position
-                        STRPosition = i+1;
-                        break;
-                    }
-                }
-
-                if (!falseDetection) {
-                    STRPosition = 0;
-
-                    // Update repetitions
-                    if (currentRepeats > greatestRepeats) {
-                        greatestRepeats = currentRepeats;
-                    }
-
-                    // Reset current repetitions
-                    currentRepeats = 0;
-                }
-
-            }
+        // Getters
+        public byte[] getSequence() {
+            return sequence;
         }
 
-        return Math.max(currentRepeats, greatestRepeats);
+        // Tools
+        private void fillConversionMap() {
+            conversionMap = new byte[128];
+
+            // Fill with values
+            conversionMap['A'] = 0;
+            conversionMap['C'] = 1;
+            conversionMap['T'] = 2;
+            conversionMap['G'] = 3;
+
+            conversionMap['a'] = 0;
+            conversionMap['c'] = 1;
+            conversionMap['t'] = 2;
+            conversionMap['g'] = 3;
+        }
+
+        // Constructor
+        DNASequence(String DNAString) {
+            // Configure conversion map (string to bytes)
+            fillConversionMap();
+
+            // Convert DNA Sequence
+            sequence = new byte[DNAString.length()];
+
+            for (int i = 0; i < sequence.length; i++) {
+                sequence[i] = conversionMap[DNAString.charAt(i)];
+            }
+        }
+    }
+
+    private static class Hasher {
+        // Config
+        private int P_VALUE = 1000000787;
+
+        private int hash;
+        private byte[] value;
+
+        // Getters
+        public int getHash() {
+            return hash;
+        }
+
+        // Hash Methods
+        public void calculateHash(int startIndex, int endIndex) {
+            int sum = 0;
+
+            for (int i = startIndex; i < endIndex; i++) {
+                sum += (value[i] * (int) Math.pow(4, endIndex - i)) % P_VALUE;
+            }
+
+            hash = sum % P_VALUE;
+        }
+
+        // Constructor
+        Hasher(byte[] value) {
+            this.value = value;
+            calculateHash(0, value.length);
+        }
+    }
+
+    private static class SequenceHasher extends Hasher {
+        private int currentPosition = 0;
+        private int STRLength;
+        private byte[] original;
+
+        // Constructor
+        SequenceHasher(byte[] value, int STRLength) {
+            super(value);
+            this.STRLength = STRLength;
+            original = value;
+            super.calculateHash(0, STRLength);
+        }
+
+        // Increment Hash (1 forward)
+        public int incrementByOne() {
+            
+        }
     }
 }
